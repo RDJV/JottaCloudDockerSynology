@@ -18,12 +18,6 @@ RUN apt-get update \
 VOLUME ["/config"]
 VOLUME ["/backup"]
 
-# copy in files
-ADD /jottad/ /usr/local/jottad
-
-# add execute permission
-RUN chmod +x /usr/local/jottad/* /etc/init.d/jottad
-
 # Open port
 EXPOSE 14443
 
@@ -35,7 +29,10 @@ ENV JOTTA_TOKEN=**None** \
     PGID=101 \
     LOCALTIME=/usr/share/zoneinfo/Europe/Copenhagen
 
-
+RUN git clone https://github.com/PocketPi/docker-jotta-cli.git
+RUN mkdir -p /usr/local/jottad/
+RUN cp docker-jotta-cli/entrypoint.sh /usr/local/jottad/entrypoint.sh
+RUN chmod +x /usr/local/jottad/entrypoint.sh
 
 # setup container and start service
 ENTRYPOINT ["/usr/local/jottad/entrypoint.sh"]
