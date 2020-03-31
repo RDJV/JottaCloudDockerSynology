@@ -1,3 +1,26 @@
+#!/bin/bash
+
+# set timezone
+rm /etc/localtime
+ln -s $LOCALTIME /etc/localtime
+
+# make sure we are running the latest version of jotta-cli
+apt-get install jotta-cli
+
+# set the jottad user and group id
+usermod -u $PUID jottad
+usermod --gid $PGID jottad
+usermod -a -G jottad jottad
+
+# start the service
+/etc/init.d/jottad start
+
+# wait for service to fully start
+sleep 5
+
+if [[ "$(jotta-cli status)" =~ ERROR.* ]]; then
+
+  echo "First time login"
 
   # Login user
   /usr/bin/expect -c "
@@ -10,7 +33,7 @@
   "
 
 # add backup volume
-  jotta-cli add /backup/
+  jotta-cli add /backup
 
 else
 
