@@ -25,18 +25,18 @@ EXPOSE 14443
 #set environment
 ENV JOTTA_TOKEN=**None** \
     JOTTA_DEVICE=**None** \
+    JOTTA_DEVICE_FOUND=yes \
     JOTTA_SCANINTERVAL=1h \
     JOTTA_INTERVAL_FOLDER=/sync \
+    LOCALTIME=Europe/Amsterdam
     JOTTA_MAXUPLOADS=6 \
     JOTTA_MAXDOWNLOADS=6 \
     JOTTA_DOWNLOADRATE=0 \
     JOTTA_UPLOADRATE=0 \
-    JOTTA_DEVICE_FOUND=yes \
     PUID=101 \
     PGID=101 \
     JOTTAD_USER=jottad \
     JOTTAD_GROUP=jottad \
-    LOCALTIME=Europe/Amsterdam
 
 RUN git clone https://github.com/RDJV/JottaCloudDockerSynology.git jotta-cli-docker-synology
 RUN mkdir -p /usr/local/jottad/
