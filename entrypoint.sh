@@ -2,15 +2,19 @@
 
 # set timezone
 rm /etc/localtime
-ln -s $LOCALTIME /etc/localtime
+ln -s /usr/share/zoneinfo/$LOCALTIME /etc/localtime
 
 # make sure we are running the latest version of jotta-cli
+apt-get update
 apt-get install jotta-cli
+apt-get autoremove -y
+apt-get clean
+rm -rf /var/lib/lists/*
 
 # set the jottad user and group id
 usermod -u $PUID jottad
 usermod --gid $PGID jottad
-usermod -a -G jottad jottad
+usermod -a -G $JOTTAD_USER $JOTTAD_GROUP
 
 # start the service
 /etc/init.d/jottad start
@@ -29,10 +33,12 @@ if [[ "$(jotta-cli status)" =~ ERROR.* ]]; then
   expect \"accept license (yes/no): \" {send \"yes\n\"}
   expect \"Personal login token: \" {send \"$JOTTA_TOKEN\n\"}
   expect \"Devicename*: \" {send \"$JOTTA_DEVICE\n\"}
+  expect \"*device*: \" {send \"$JOTTA_DEVICE_FOUND\n\"}
   expect eof
   "
 
 # add backup volume
+  jotta-cli add /backup
   jotta-cli add /backup
 
 else
@@ -51,7 +57,30 @@ fi
   echo "Setting scan interval"
   jotta-cli config set scaninterval $JOTTA_SCANINTERVAL
 
-# put tail in the foreground, so docker does not quit
-jotta-cli tail
+  # set download channels
+  echo "Setting download channels"
+  jotta-cli config set maxdownloads $JOTTA_MAXDOWNLOADS
 
-exec "$@"
+  # set upload slots
+  echo "Setting upload channels"
+  jotta-cli config set maxuploads $JOTTA_MAXUPLOADS
+
+  # set download rate
+  echo "Setting download rate"
+  jotta-cli config set downloadrate $JOTTA_DOWNLOADRATE
+
+  # set upload rate
+  echo "Setting upload rate"
+  jotta-cli config set uploadrate $JOTTA_UPLOADRATE
+
+  R=0
+  while [[ $R -eq 0 ]]
+  do
+    sleep 15
+    jotta-cli status >/dev/null 2>&1
+          R=$?
+  done
+
+  echo "Exiting:"
+  jotta-cli status
+  exit 1

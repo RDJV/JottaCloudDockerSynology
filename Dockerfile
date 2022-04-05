@@ -17,6 +17,7 @@ RUN apt-get update \
 # Add volumes for backup folder and configuration directories
 VOLUME ["/config"]
 VOLUME ["/backup"]
+VOLUME ["/sync"]
 
 # Open port
 EXPOSE 14443
@@ -24,14 +25,22 @@ EXPOSE 14443
 #set environment
 ENV JOTTA_TOKEN=**None** \
     JOTTA_DEVICE=**None** \
-    JOTTA_SCANINTERVAL=1h\
+    JOTTA_SCANINTERVAL=1h \
+    JOTTA_INTERVAL_FOLDER=/sync \
+    JOTTA_MAXUPLOADS=6 \
+    JOTTA_MAXDOWNLOADS=6 \
+    JOTTA_DOWNLOADRATE=0 \
+    JOTTA_UPLOADRATE=0 \
+    JOTTA_DEVICE_FOUND=yes \
     PUID=101 \
     PGID=101 \
-    LOCALTIME=/usr/share/zoneinfo/Europe/Copenhagen
+    JOTTAD_USER=jottad \
+    JOTTAD_GROUP=jottad \
+    LOCALTIME=Europe/Amsterdam
 
-RUN git clone https://github.com/PocketPi/docker-jotta-cli.git
+RUN git clone https://github.com/RDJV/JottaCloudDockerSynology.git jotta-cli-docker-synology
 RUN mkdir -p /usr/local/jottad/
-RUN cp docker-jotta-cli/entrypoint.sh /usr/local/jottad/entrypoint.sh
+RUN cp jotta-cli-docker-synology/entrypoint.sh /usr/local/jottad/entrypoint.sh
 RUN chmod +x /usr/local/jottad/entrypoint.sh
 
 # setup container and start service
