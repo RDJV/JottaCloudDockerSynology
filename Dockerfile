@@ -38,7 +38,7 @@ ENV JOTTA_TOKEN=**None** \
 
 RUN git clone https://github.com/RDJV/JottaCloudDockerSynology.git jotta-cli-docker-synology
 RUN mkdir -p /usr/local/jottad/
-RUN cp entrypoint.sh /usr/local/jottad/entrypoint.sh
+RUN cp jotta-cli-docker-synology/entrypoint.sh /usr/local/jottad/entrypoint.sh
 RUN chmod +x /usr/local/jottad/entrypoint.sh
 
 # setup container and start service
