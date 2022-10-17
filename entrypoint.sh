@@ -17,7 +17,7 @@ usermod --gid $PGID jottad
 usermod -a -G $JOTTAD_USER $JOTTAD_GROUP
 
 # start the service
-/etc/init.d/jottad start
+systemctl start jottad
 
 # wait for service to fully start
 sleep 5

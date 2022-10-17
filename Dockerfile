@@ -1,7 +1,5 @@
 FROM ubuntu:latest
 
-MAINTAINER Peter Rasmussen
-
 # Update packages and install software
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -28,7 +26,7 @@ ENV JOTTA_TOKEN=**None** \
     JOTTA_DEVICE_FOUND=yes \
     JOTTA_SCANINTERVAL=1h \
     JOTTA_INTERVAL_FOLDER=/sync \
-    LOCALTIME=Europe/Amsterdam
+    LOCALTIME=Europe/Amsterdam \
     JOTTA_MAXUPLOADS=6 \
     JOTTA_MAXDOWNLOADS=6 \
     JOTTA_DOWNLOADRATE=0 \
@@ -36,11 +34,11 @@ ENV JOTTA_TOKEN=**None** \
     PUID=101 \
     PGID=101 \
     JOTTAD_USER=jottad \
-    JOTTAD_GROUP=jottad \
+    JOTTAD_GROUP=jottad 
 
 RUN git clone https://github.com/RDJV/JottaCloudDockerSynology.git jotta-cli-docker-synology
 RUN mkdir -p /usr/local/jottad/
-RUN cp jotta-cli-docker-synology/entrypoint.sh /usr/local/jottad/entrypoint.sh
+RUN cp entrypoint.sh /usr/local/jottad/entrypoint.sh
 RUN chmod +x /usr/local/jottad/entrypoint.sh
 
 # setup container and start service
